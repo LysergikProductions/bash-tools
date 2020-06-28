@@ -1,14 +1,14 @@
-# some stuff before main function
+#!/bin/bash
 INIT(){
-  starting="MAIN loop starting"; ending="MAIN loop success"
-  runMAIN=1; stopTime=0
-  clear
+	starting="MAIN loop starting"; ending="MAIN loop success"
+	runMAIN=1; stopTime=0
+	clear
 }; INIT
 
 # exit script when MAIN is done, if ever (in this case counting out 4 seconds)
 exitScript(){
 	tput cnorm
-  trap - SIGINT SIGTERM SIGTERM # clear the trap
+	trap - SIGINT SIGTERM SIGTERM # clear the trap
 	kill -- -$$ # Send SIGTERM to child/sub processes
 	exit
 }; trap exitScript SIGINT SIGTERM # set trap
@@ -16,17 +16,16 @@ exitScript(){
 printf "Stop the time with any key!\n\n"
 
 MAIN(){
-  #printf "\n\n$starting\n"
-  sleep 0.02
-  
-  printf "\r%*s" $((0)) "${stopTime}s"
- stopTime=$(awk "BEGIN {print ($stopTime+0.02)}")
+	sleep 0.02
+	stopTime=$(awk "BEGIN {print ($stopTime+0.02)}")
+
+	printf "\r%*s" $((0)) "${stopTime}s"
 }
 
 # main loop running in subshell due to the '&'' after 'done'
 tput civis
 { while ((runMAIN)); do
-  if ! MAIN; then echo; runMain=0; fi
+	if ! MAIN; then echo; runMain=0; fi
 done; } &
 
 # --------------------------------------------------
@@ -38,4 +37,5 @@ stty "$oldstty"
 # --------------------------------------------------
 
 # everything after this point will occur after user inputs any key or if main loop exits
-printf "\n\nYou pressed a key!\n\nGoodbye!\n"
+printf "\n\nYou pressed a key!\n\nGoodbye!\n\n"
+exitScript
